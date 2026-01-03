@@ -1,0 +1,206 @@
+.team-detail {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.team-header {
+    margin-bottom: 32px;
+}
+
+.team-header-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.team-id-badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.team-header h1 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin: 0;
+}
+
+.budget-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.budget-card {
+    background: rgba(30, 30, 45, 0.8);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.budget-card.spent {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.budget-card.remaining {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.budget-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.budget-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.budget-card.spent .budget-value {
+    color: #f59e0b;
+}
+
+.budget-card.remaining .budget-value {
+    color: #4ade80;
+}
+
+.budget-progress {
+    margin-bottom: 32px;
+}
+
+.progress-bar-large {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill-large {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}
+
+.progress-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.role-distribution {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.role-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(30, 30, 45, 0.8);
+    padding: 20px 32px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.role-emoji {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.role-count {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.role-name {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.squad-section {
+    margin-top: 32px;
+}
+
+.squad-section h2 {
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.loading,
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(99, 102, 241, 0.2);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-detail {
+        padding: 16px;
+    }
+
+    .team-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .budget-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .role-distribution {
+        gap: 12px;
+    }
+
+    .role-item {
+        padding: 16px 24px;
+    }
+}

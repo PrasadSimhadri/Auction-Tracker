@@ -1,6 +1,6 @@
 # IPL Auction Tracker
 
-A web application to track IPL-style auctions for university fest events. Built with React (Vite) frontend and Node.js/Express backend with MySQL database.
+A web application to track IPL-style auctions. Built with React frontend and Node.js/Express backend with MySQL database.
 
 ## Features
 
@@ -11,7 +11,7 @@ A web application to track IPL-style auctions for university fest events. Built 
 
 ## Tech Stack
 
-- **Frontend**: React + Vite
+- **Frontend**: React
 - **Backend**: Node.js + Express
 - **Database**: MySQL
 
@@ -73,7 +73,3 @@ DB_NAME=auc_tracker
 DB_PORT=3306
 PORT=5000
 ```
-
-## License
-
-MIT

@@ -31,18 +31,18 @@ CREATE TABLE players (
   FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
 );
 
--- Insert 10 default teams
+-- Insert 10 IPL-style teams
 INSERT INTO teams (name, max_purse) VALUES
-  ('Team 1', 100.00),
-  ('Team 2', 100.00),
-  ('Team 3', 100.00),
-  ('Team 4', 100.00),
-  ('Team 5', 100.00),
-  ('Team 6', 100.00),
-  ('Team 7', 100.00),
-  ('Team 8', 100.00),
-  ('Team 9', 100.00),
-  ('Team 10', 100.00);
+  ('Chennai Super Kings', 100.00),
+  ('Mumbai Indians', 100.00),
+  ('Royal Challengers', 100.00),
+  ('Kolkata Knight Riders', 100.00),
+  ('Delhi Capitals', 100.00),
+  ('Rajasthan Royals', 100.00),
+  ('Punjab Kings', 100.00),
+  ('Sunrisers Hyderabad', 100.00),
+  ('Gujarat Titans', 100.00),
+  ('Lucknow Super Giants', 100.00);
 
 -- Verify data
 SELECT * FROM teams;

@@ -1,16 +1,6 @@
 import { playersApi } from '../api';
 import './PlayerTable.css';
 
-const getRoleEmoji = (role) => {
-    const emojis = {
-        WK: '🧤',
-        Batter: '🏏',
-        Bowler: '⚾',
-        AR: '⭐',
-    };
-    return emojis[role] || '👤';
-};
-
 const getRoleBadgeClass = (role) => {
     const classes = {
         WK: 'role-wk',
@@ -36,7 +26,6 @@ function PlayerTable({ players, onDelete, showTeam = true }) {
     if (!players || players.length === 0) {
         return (
             <div className="empty-state">
-                <span className="empty-icon">🏏</span>
                 <p>No players yet</p>
             </div>
         );
@@ -64,7 +53,7 @@ function PlayerTable({ players, onDelete, showTeam = true }) {
                             <td className="cell-name">{player.name}</td>
                             <td>
                                 <span className={`role-badge ${getRoleBadgeClass(player.role)}`}>
-                                    {getRoleEmoji(player.role)} {player.role}
+                                    {player.role}
                                 </span>
                             </td>
                             {showTeam && <td className="cell-team">{player.team_name}</td>}
@@ -73,7 +62,7 @@ function PlayerTable({ players, onDelete, showTeam = true }) {
                             <td className="cell-notes">{player.notes || '-'}</td>
                             <td className="cell-actions">
                                 <button className="btn-delete" onClick={() => handleDelete(player)}>
-                                    🗑️
+                                    Delete
                                 </button>
                             </td>
                         </tr>

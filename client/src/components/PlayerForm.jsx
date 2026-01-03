@@ -3,10 +3,10 @@ import { playersApi } from '../api';
 import './PlayerForm.css';
 
 const ROLES = [
-    { value: 'WK', label: '🧤 Wicket Keeper' },
-    { value: 'Batter', label: '🏏 Batter' },
-    { value: 'Bowler', label: '⚾ Bowler' },
-    { value: 'AR', label: '⭐ All-Rounder' },
+    { value: 'WK', label: 'Wicket Keeper' },
+    { value: 'Batter', label: 'Batter' },
+    { value: 'Bowler', label: 'Bowler' },
+    { value: 'AR', label: 'All-Rounder' },
 ];
 
 function PlayerForm({ teams, onPlayerAdded }) {
@@ -63,7 +63,7 @@ function PlayerForm({ teams, onPlayerAdded }) {
 
     return (
         <div className="player-form-container">
-            <h2 className="form-title">📝 Add Player to Auction</h2>
+            <h2 className="form-title">Add Player to Auction</h2>
 
             {error && <div className="alert alert-error">{error}</div>}
             {success && <div className="alert alert-success">{success}</div>}
@@ -163,7 +163,7 @@ function PlayerForm({ teams, onPlayerAdded }) {
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={loading}>
-                    {loading ? '⏳ Adding...' : '➕ Add Player'}
+                    {loading ? 'Adding...' : 'Add Player'}
                 </button>
             </form>
         </div>

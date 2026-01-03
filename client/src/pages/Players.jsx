@@ -56,7 +56,7 @@ function Players() {
     return (
         <div className="players-page">
             <div className="page-header">
-                <h1>🏏 All Players</h1>
+                <h1>All Players</h1>
                 <p className="page-subtitle">View and manage all auctioned players</p>
             </div>
 

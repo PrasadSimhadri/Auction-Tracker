@@ -5,7 +5,6 @@ function Navbar() {
     return (
         <nav className="navbar">
             <div className="navbar-brand">
-                <span className="logo">🏏</span>
                 <h1>IPL Auction Tracker</h1>
             </div>
             <div className="navbar-links">

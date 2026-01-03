@@ -2,16 +2,6 @@ import { useState } from 'react';
 import { teamsApi } from '../api';
 import './TeamCard.css';
 
-const getRoleEmoji = (role) => {
-    const emojis = {
-        WK: '🧤',
-        Batter: '🏏',
-        Bowler: '⚾',
-        AR: '⭐',
-    };
-    return emojis[role] || '👤';
-};
-
 function TeamCard({ team, onUpdate, onClick }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(team.name);
@@ -63,7 +53,7 @@ function TeamCard({ team, onUpdate, onClick }) {
                     }}
                     disabled={loading}
                 >
-                    {loading ? '...' : isEditing ? '✓' : '✏️'}
+                    {loading ? '...' : isEditing ? 'Save' : 'Edit'}
                 </button>
                 {isEditing && (
                     <button
@@ -73,7 +63,7 @@ function TeamCard({ team, onUpdate, onClick }) {
                             handleCancel();
                         }}
                     >
-                        ✕
+                        Cancel
                     </button>
                 )}
             </div>

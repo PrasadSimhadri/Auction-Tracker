@@ -49,28 +49,24 @@ function Dashboard() {
             {/* Stats Overview */}
             <div className="stats-overview">
                 <div className="stat-card">
-                    <span className="stat-icon">🏆</span>
                     <div className="stat-content">
                         <span className="stat-value">{teams.length}</span>
                         <span className="stat-label">Teams</span>
                     </div>
                 </div>
                 <div className="stat-card">
-                    <span className="stat-icon">👥</span>
                     <div className="stat-content">
                         <span className="stat-value">{players.length}</span>
                         <span className="stat-label">Players Sold</span>
                     </div>
                 </div>
                 <div className="stat-card">
-                    <span className="stat-icon">💰</span>
                     <div className="stat-content">
                         <span className="stat-value">{totalSpent.toFixed(2)} Cr</span>
                         <span className="stat-label">Total Spent</span>
                     </div>
                 </div>
                 <div className="stat-card">
-                    <span className="stat-icon">📊</span>
                     <div className="stat-content">
                         <span className="stat-value">{avgPlayerPrice.toFixed(2)} Cr</span>
                         <span className="stat-label">Avg Price</span>
@@ -83,7 +79,7 @@ function Dashboard() {
 
             {/* Teams Grid */}
             <div className="section">
-                <h2 className="section-title">📋 Teams Overview</h2>
+                <h2 className="section-title">Teams Overview</h2>
                 <div className="teams-grid">
                     {teams.map((team) => (
                         <TeamCard key={team.id} team={team} onUpdate={fetchData} />
@@ -93,7 +89,7 @@ function Dashboard() {
 
             {/* Recent Players */}
             <div className="section">
-                <h2 className="section-title">🏏 Recent Players</h2>
+                <h2 className="section-title">Recent Players</h2>
                 <PlayerTable players={players.slice(0, 10)} onDelete={fetchData} />
             </div>
         </div>

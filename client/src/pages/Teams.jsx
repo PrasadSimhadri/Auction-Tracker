@@ -40,8 +40,8 @@ function Teams() {
     return (
         <div className="teams-page">
             <div className="page-header">
-                <h1>🏆 Teams Management</h1>
-                <p className="page-subtitle">Click on a team to view squad details. Use the ✏️ button to edit name/purse.</p>
+                <h1>Teams Management</h1>
+                <p className="page-subtitle">Click on a team to view squad details. Use the Edit button to edit name/purse.</p>
             </div>
 
             <div className="teams-grid">

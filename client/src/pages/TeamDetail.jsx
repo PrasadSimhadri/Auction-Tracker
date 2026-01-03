@@ -56,7 +56,7 @@ function TeamDetail() {
     return (
         <div className="team-detail">
             <button className="back-btn" onClick={() => navigate('/teams')}>
-                ← Back to Teams
+                Back to Teams
             </button>
 
             <div className="team-header">
@@ -103,22 +103,18 @@ function TeamDetail() {
             {/* Role Distribution */}
             <div className="role-distribution">
                 <div className="role-item">
-                    <span className="role-emoji">🧤</span>
                     <span className="role-count">{getRoleCount(players, 'WK')}</span>
                     <span className="role-name">WK</span>
                 </div>
                 <div className="role-item">
-                    <span className="role-emoji">🏏</span>
                     <span className="role-count">{getRoleCount(players, 'Batter')}</span>
                     <span className="role-name">Batters</span>
                 </div>
                 <div className="role-item">
-                    <span className="role-emoji">⚾</span>
                     <span className="role-count">{getRoleCount(players, 'Bowler')}</span>
                     <span className="role-name">Bowlers</span>
                 </div>
                 <div className="role-item">
-                    <span className="role-emoji">⭐</span>
                     <span className="role-count">{getRoleCount(players, 'AR')}</span>
                     <span className="role-name">All-Rounders</span>
                 </div>

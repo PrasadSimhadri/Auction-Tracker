@@ -72,6 +72,11 @@ function PlayerForm({ teams, onPlayerAdded }) {
         }
     };
 
+    const getRemainingPurse = (team) => {
+        const remaining = parseFloat(team.remaining_purse) || parseFloat(team.max_purse) || 100;
+        return remaining.toFixed(2);
+    };
+
     return (
         <div className="player-form-container">
             <h2 className="form-title">Add Player to Auction</h2>
@@ -138,7 +143,7 @@ function PlayerForm({ teams, onPlayerAdded }) {
                                 placeholder="0.00"
                                 step="0.1"
                                 min="0"
-                                required={!formData.is_unsold}
+                                required
                             />
                         </div>
 
@@ -149,12 +154,12 @@ function PlayerForm({ teams, onPlayerAdded }) {
                                 name="team_id"
                                 value={formData.team_id}
                                 onChange={handleChange}
-                                required={!formData.is_unsold}
+                                required
                             >
                                 <option value="">Select Team</option>
-                                {teams.map((team) => (
+                                {teams && teams.map((team) => (
                                     <option key={team.id} value={team.id}>
-                                        {team.name} ({parseFloat(team.remaining_purse || team.max_purse).toFixed(2)} Cr left)
+                                        {team.name} ({getRemainingPurse(team)} Cr left)
                                     </option>
                                 ))}
                             </select>

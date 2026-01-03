@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { teamsApi, playersApi } from '../api';
 import TeamCard from '../components/TeamCard';
 import PlayerForm from '../components/PlayerForm';
@@ -9,6 +10,7 @@ function Dashboard() {
     const [teams, setTeams] = useState([]);
     const [players, setPlayers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
@@ -28,6 +30,10 @@ function Dashboard() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleTeamClick = (team) => {
+        navigate(`/teams/${team.id}`);
+    };
 
     const totalSpent = teams.reduce((sum, t) => sum + (parseFloat(t.spent) || 0), 0);
     const totalPoints = teams.reduce((sum, t) => sum + (parseInt(t.total_points) || 0), 0);
@@ -62,13 +68,13 @@ function Dashboard() {
                 </div>
                 <div className="stat-card">
                     <div className="stat-content">
-                        <span className="stat-value">{totalSpent.toFixed(2)} Cr</span>
+                        <span className="stat-value">{totalSpent.toFixed(1)} Cr</span>
                         <span className="stat-label">Total Spent</span>
                     </div>
                 </div>
                 <div className="stat-card">
                     <div className="stat-content">
-                        <span className="stat-value">{avgPlayerPrice.toFixed(2)} Cr</span>
+                        <span className="stat-value">{avgPlayerPrice.toFixed(1)} Cr</span>
                         <span className="stat-label">Avg Price</span>
                     </div>
                 </div>
@@ -88,7 +94,12 @@ function Dashboard() {
                 <h2 className="section-title">Teams Overview</h2>
                 <div className="teams-grid">
                     {teams.map((team) => (
-                        <TeamCard key={team.id} team={team} onUpdate={fetchData} />
+                        <TeamCard
+                            key={team.id}
+                            team={team}
+                            onUpdate={fetchData}
+                            onClick={handleTeamClick}
+                        />
                     ))}
                 </div>
             </div>

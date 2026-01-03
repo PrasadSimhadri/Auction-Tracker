@@ -64,42 +64,90 @@
     margin-top: 8px;
     background: rgba(25, 25, 40, 0.98);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    max-height: 300px;
+    border-radius: 10px;
+    max-height: 350px;
     overflow-y: auto;
     z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .search-result-item {
     padding: 12px 16px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
     transition: background 0.2s ease;
 }
 
 .search-result-item:hover {
-    background: rgba(99, 102, 241, 0.2);
+    background: rgba(99, 102, 241, 0.15);
 }
 
 .search-result-item:not(:last-child) {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.result-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
 .result-name {
     font-weight: 600;
     color: #fff;
+    font-size: 0.95rem;
 }
 
-.result-info {
+.result-role {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-wk {
+    background: rgba(236, 72, 153, 0.2);
+    color: #f472b6;
+}
+
+.role-batter {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.role-bowler {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.role-ar {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.result-details {
+    display: flex;
+    gap: 12px;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+}
+
+.result-team {
+    color: #a5b4fc;
+}
+
+.result-amount {
+    color: #4ade80;
+}
+
+.result-points {
+    color: #fbbf24;
 }
 
 .no-results {
     color: rgba(255, 255, 255, 0.5);
     cursor: default;
+    text-align: center;
 }
 
 .no-results:hover {

@@ -42,7 +42,11 @@ function Navbar() {
     const handleResultClick = (player) => {
         setSearchQuery('');
         setShowResults(false);
-        navigate(`/teams/${player.team_id}`);
+        if (player.team_id) {
+            navigate(`/teams/${player.team_id}`);
+        } else {
+            navigate('/players');
+        }
     };
 
     return (
@@ -68,10 +72,15 @@ function Navbar() {
                                 className="search-result-item"
                                 onClick={() => handleResultClick(player)}
                             >
-                                <span className="result-name">{player.name}</span>
-                                <span className="result-info">
-                                    {player.role} | {player.team_name || 'Unsold'} | {player.sold_amount} Cr
-                                </span>
+                                <div className="result-main">
+                                    <span className="result-name">{player.name}</span>
+                                    <span className={`result-role role-${player.role.toLowerCase()}`}>{player.role}</span>
+                                </div>
+                                <div className="result-details">
+                                    <span className="result-team">{player.team_name || 'Unsold'}</span>
+                                    <span className="result-amount">{player.sold_amount} Cr</span>
+                                    <span className="result-points">{player.points || 0} pts</span>
+                                </div>
                             </div>
                         ))}
                     </div>

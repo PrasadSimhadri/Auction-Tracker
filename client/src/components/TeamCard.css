@@ -1,8 +1,8 @@
 .team-card {
-    background: linear-gradient(145deg, rgba(30, 30, 45, 0.9), rgba(25, 25, 40, 0.95));
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(145deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 35, 0.98));
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
@@ -22,9 +22,9 @@
 }
 
 .team-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
 .team-card:hover::before {
@@ -34,22 +34,24 @@
 .team-card-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
 .team-id {
-    background: rgba(99, 102, 241, 0.2);
-    color: #a5b4fc;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2));
+    color: #c4b5fd;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .team-name {
     flex: 1;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: 600;
     color: #fff;
     margin: 0;
     white-space: nowrap;
@@ -59,77 +61,85 @@
 
 .edit-name-input {
     flex: 1;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
     border: 1px solid rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(99, 102, 241, 0.15);
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     min-width: 0;
 }
 
 .edit-btn,
 .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    padding: 4px 10px;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
     transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .edit-btn:hover {
-    background: rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #fff;
 }
 
 .cancel-btn {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
     color: #f87171;
 }
 
 .cancel-btn:hover {
-    background: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.25);
 }
 
 .progress-bar {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .progress-fill {
     height: 100%;
-    border-radius: 2px;
+    border-radius: 3px;
     transition: width 0.5s ease, background 0.3s ease;
 }
 
 .team-stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
 
 .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 6px 4px;
+    padding: 12px 8px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .stat-value {
-    font-size: 1rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: #fff;
+    line-height: 1;
 }
 
 .stat-value.spent-value {
-    color: #f59e0b;
+    color: #fbbf24;
 }
 
 .stat-value.remaining-value {
@@ -144,5 +154,6 @@
     font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
-    margin-top: 2px;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
 }

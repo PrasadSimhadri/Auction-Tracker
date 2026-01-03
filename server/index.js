@@ -5,6 +5,7 @@ require('dotenv').config();
 const teamsRouter = require('./routes/teams');
 const playersRouter = require('./routes/players');
 const statsRouter = require('./routes/stats');
+const settingsRouter = require('./routes/settings');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use('/api/teams', teamsRouter);
 app.use('/api/players', playersRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/settings', settingsRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

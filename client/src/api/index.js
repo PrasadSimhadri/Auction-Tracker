@@ -16,7 +16,8 @@ export const teamsApi = {
     create: (data) => api.post('/teams', data),
     update: (id, data) => api.put(`/teams/${id}`, data),
     delete: (id) => api.delete(`/teams/${id}`),
-    getPlayers: (id) => api.get(`/teams/${id}/players`),
+    getPlayers: (id, role) => api.get(`/teams/${id}/players`, { params: role ? { role } : {} }),
+    getStats: (id) => api.get(`/teams/${id}/stats`),
 };
 
 // Players API
@@ -26,11 +27,18 @@ export const playersApi = {
     create: (data) => api.post('/players', data),
     update: (id, data) => api.put(`/players/${id}`, data),
     delete: (id) => api.delete(`/players/${id}`),
+    search: (query) => api.get('/players/search', { params: { q: query } }),
 };
 
 // Stats API
 export const statsApi = {
     get: () => api.get('/stats'),
+};
+
+// Settings API
+export const settingsApi = {
+    get: () => api.get('/settings'),
+    updateMaxPurse: (max_purse) => api.put('/settings/max-purse', { max_purse }),
 };
 
 export default api;

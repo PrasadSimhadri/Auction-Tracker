@@ -4,23 +4,27 @@ import { teamsApi } from '../api';
 import PlayerTable from '../components/PlayerTable';
 import './TeamDetail.css';
 
-const getRoleCount = (players, role) => players.filter(p => p.role === role).length;
+const ROLES = ['All', 'WK', 'Batter', 'Bowler', 'AR'];
 
 function TeamDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [team, setTeam] = useState(null);
     const [players, setPlayers] = useState([]);
+    const [roleStats, setRoleStats] = useState([]);
+    const [selectedRole, setSelectedRole] = useState('All');
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
         try {
-            const [teamRes, playersRes] = await Promise.all([
+            const [teamRes, playersRes, statsRes] = await Promise.all([
                 teamsApi.getById(id),
-                teamsApi.getPlayers(id),
+                teamsApi.getPlayers(id, selectedRole === 'All' ? null : selectedRole),
+                teamsApi.getStats(id),
             ]);
             setTeam(teamRes.data);
             setPlayers(playersRes.data);
+            setRoleStats(statsRes.data);
         } catch (error) {
             console.error('Failed to fetch team data:', error);
         } finally {
@@ -30,7 +34,17 @@ function TeamDetail() {
 
     useEffect(() => {
         fetchData();
-    }, [id]);
+    }, [id, selectedRole]);
+
+    const getRoleCount = (role) => {
+        const stat = roleStats.find(s => s.role === role);
+        return stat ? stat.count : 0;
+    };
+
+    const getRolePoints = (role) => {
+        const stat = roleStats.find(s => s.role === role);
+        return stat ? stat.total_points : 0;
+    };
 
     if (loading) {
         return (
@@ -50,8 +64,11 @@ function TeamDetail() {
         );
     }
 
-    const totalPoints = players.reduce((sum, p) => sum + (p.points || 0), 0);
-    const spentPercentage = ((team.spent || 0) / team.max_purse) * 100;
+    const totalPoints = roleStats.reduce((sum, s) => sum + (parseInt(s.total_points) || 0), 0);
+    const spent = parseFloat(team.spent) || 0;
+    const maxPurse = parseFloat(team.max_purse) || 100;
+    const remainingPurse = parseFloat(team.remaining_purse) || (maxPurse - spent);
+    const spentPercentage = (spent / maxPurse) * 100;
 
     return (
         <div className="team-detail">
@@ -68,19 +85,19 @@ function TeamDetail() {
 
             {/* Budget Summary */}
             <div className="budget-summary">
-                <div className="budget-card">
-                    <span className="budget-label">Max Purse</span>
-                    <span className="budget-value">{team.max_purse} Cr</span>
-                </div>
                 <div className="budget-card spent">
                     <span className="budget-label">Spent</span>
-                    <span className="budget-value">{(team.spent || 0).toFixed(2)} Cr</span>
+                    <span className="budget-value">{spent.toFixed(2)} Cr</span>
                 </div>
                 <div className="budget-card remaining">
                     <span className="budget-label">Remaining</span>
-                    <span className="budget-value">{(team.remaining_purse || team.max_purse).toFixed(2)} Cr</span>
+                    <span className="budget-value">{remainingPurse.toFixed(2)} Cr</span>
                 </div>
                 <div className="budget-card">
+                    <span className="budget-label">Players</span>
+                    <span className="budget-value">{team.player_count || 0}</span>
+                </div>
+                <div className="budget-card points">
                     <span className="budget-label">Total Points</span>
                     <span className="budget-value">{totalPoints}</span>
                 </div>
@@ -102,28 +119,45 @@ function TeamDetail() {
 
             {/* Role Distribution */}
             <div className="role-distribution">
-                <div className="role-item">
-                    <span className="role-count">{getRoleCount(players, 'WK')}</span>
+                <div className="role-item" onClick={() => setSelectedRole('WK')}>
+                    <span className="role-count">{getRoleCount('WK')}</span>
                     <span className="role-name">WK</span>
+                    <span className="role-points">{getRolePoints('WK')} pts</span>
                 </div>
-                <div className="role-item">
-                    <span className="role-count">{getRoleCount(players, 'Batter')}</span>
+                <div className="role-item" onClick={() => setSelectedRole('Batter')}>
+                    <span className="role-count">{getRoleCount('Batter')}</span>
                     <span className="role-name">Batters</span>
+                    <span className="role-points">{getRolePoints('Batter')} pts</span>
                 </div>
-                <div className="role-item">
-                    <span className="role-count">{getRoleCount(players, 'Bowler')}</span>
+                <div className="role-item" onClick={() => setSelectedRole('Bowler')}>
+                    <span className="role-count">{getRoleCount('Bowler')}</span>
                     <span className="role-name">Bowlers</span>
+                    <span className="role-points">{getRolePoints('Bowler')} pts</span>
                 </div>
-                <div className="role-item">
-                    <span className="role-count">{getRoleCount(players, 'AR')}</span>
+                <div className="role-item" onClick={() => setSelectedRole('AR')}>
+                    <span className="role-count">{getRoleCount('AR')}</span>
                     <span className="role-name">All-Rounders</span>
+                    <span className="role-points">{getRolePoints('AR')} pts</span>
                 </div>
             </div>
 
             {/* Squad List */}
             <div className="squad-section">
-                <h2>Squad ({players.length} players)</h2>
-                <PlayerTable players={players} onDelete={fetchData} showTeam={false} />
+                <div className="squad-header">
+                    <h2>Squad ({players.length} players)</h2>
+                    <div className="role-filter">
+                        <label>Filter by Role:</label>
+                        <select
+                            value={selectedRole}
+                            onChange={(e) => setSelectedRole(e.target.value)}
+                        >
+                            {ROLES.map((role) => (
+                                <option key={role} value={role}>{role}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                <PlayerTable players={players} onDelete={fetchData} onUpdate={fetchData} showTeam={false} />
             </div>
         </div>
     );

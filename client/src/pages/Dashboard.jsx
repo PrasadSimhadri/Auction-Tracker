@@ -14,7 +14,7 @@ function Dashboard() {
         try {
             const [teamsRes, playersRes] = await Promise.all([
                 teamsApi.getAll(),
-                playersApi.getAll(),
+                playersApi.getAll({ is_unsold: 'false' }),
             ]);
             setTeams(teamsRes.data);
             setPlayers(playersRes.data);
@@ -30,7 +30,7 @@ function Dashboard() {
     }, []);
 
     const totalSpent = teams.reduce((sum, t) => sum + (parseFloat(t.spent) || 0), 0);
-    const totalBudget = teams.reduce((sum, t) => sum + parseFloat(t.max_purse), 0);
+    const totalPoints = teams.reduce((sum, t) => sum + (parseInt(t.total_points) || 0), 0);
     const avgPlayerPrice = players.length > 0
         ? players.reduce((sum, p) => sum + parseFloat(p.sold_amount), 0) / players.length
         : 0;
@@ -72,6 +72,12 @@ function Dashboard() {
                         <span className="stat-label">Avg Price</span>
                     </div>
                 </div>
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <span className="stat-value">{totalPoints}</span>
+                        <span className="stat-label">Total Points</span>
+                    </div>
+                </div>
             </div>
 
             {/* Add Player Form */}
@@ -90,7 +96,12 @@ function Dashboard() {
             {/* Recent Players */}
             <div className="section">
                 <h2 className="section-title">Recent Players</h2>
-                <PlayerTable players={players.slice(0, 10)} onDelete={fetchData} />
+                <PlayerTable
+                    players={players.slice(0, 10)}
+                    teams={teams}
+                    onDelete={fetchData}
+                    onUpdate={fetchData}
+                />
             </div>
         </div>
     );

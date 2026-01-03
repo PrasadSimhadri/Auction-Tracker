@@ -5,13 +5,13 @@ const pool = require('../db');
 // Get all players with optional filters
 router.get('/', async (req, res) => {
     try {
-        const { team_id, role } = req.query;
+        const { team_id, role, search, is_unsold } = req.query;
         let query = `
       SELECT 
         p.*,
         t.name as team_name
       FROM players p
-      JOIN teams t ON p.team_id = t.id
+      LEFT JOIN teams t ON p.team_id = t.id
       WHERE 1=1
     `;
         const values = [];
@@ -26,6 +26,17 @@ router.get('/', async (req, res) => {
             values.push(role);
         }
 
+        if (search) {
+            query += ' AND p.name LIKE ?';
+            values.push(`%${search}%`);
+        }
+
+        if (is_unsold === 'true') {
+            query += ' AND p.is_unsold = TRUE';
+        } else if (is_unsold === 'false') {
+            query += ' AND p.is_unsold = FALSE';
+        }
+
         query += ' ORDER BY p.created_at DESC';
 
         const [players] = await pool.query(query, values);
@@ -33,6 +44,32 @@ router.get('/', async (req, res) => {
     } catch (error) {
         console.error('Error fetching players:', error);
         res.status(500).json({ error: 'Failed to fetch players' });
+    }
+});
+
+// Search players by name
+router.get('/search', async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q || q.length < 2) {
+            return res.json([]);
+        }
+
+        const [players] = await pool.query(`
+      SELECT 
+        p.*,
+        t.name as team_name
+      FROM players p
+      LEFT JOIN teams t ON p.team_id = t.id
+      WHERE p.name LIKE ?
+      ORDER BY p.name
+      LIMIT 10
+    `, [`%${q}%`]);
+
+        res.json(players);
+    } catch (error) {
+        console.error('Error searching players:', error);
+        res.status(500).json({ error: 'Failed to search players' });
     }
 });
 
@@ -44,7 +81,7 @@ router.get('/:id', async (req, res) => {
         p.*,
         t.name as team_name
       FROM players p
-      JOIN teams t ON p.team_id = t.id
+      LEFT JOIN teams t ON p.team_id = t.id
       WHERE p.id = ?
     `, [req.params.id]);
 
@@ -58,15 +95,22 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Add new player (sold in auction)
+// Add new player (sold in auction or unsold)
 router.post('/', async (req, res) => {
     try {
-        const { name, role, sold_amount, team_id, notes, points } = req.body;
+        const { name, role, sold_amount, team_id, notes, points, is_unsold } = req.body;
 
         // Validation
-        if (!name || !role || !sold_amount || !team_id) {
+        if (!name || !role) {
             return res.status(400).json({
-                error: 'Name, role, sold_amount, and team_id are required'
+                error: 'Name and role are required'
+            });
+        }
+
+        // If not unsold, team_id and sold_amount are required
+        if (!is_unsold && (!sold_amount || !team_id)) {
+            return res.status(400).json({
+                error: 'Sold amount and team are required for sold players'
             });
         }
 
@@ -77,42 +121,45 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Check if team has enough budget
-        const [teamData] = await pool.query(`
-      SELECT 
-        t.max_purse,
-        COALESCE(SUM(p.sold_amount), 0) as spent
-      FROM teams t
-      LEFT JOIN players p ON t.id = p.team_id
-      WHERE t.id = ?
-      GROUP BY t.id
-    `, [team_id]);
+        // If not unsold, check team budget
+        if (!is_unsold && team_id) {
+            const [teamData] = await pool.query(`
+        SELECT 
+          t.max_purse,
+          COALESCE(SUM(p.sold_amount), 0) as spent
+        FROM teams t
+        LEFT JOIN players p ON t.id = p.team_id AND p.is_unsold = FALSE
+        WHERE t.id = ?
+        GROUP BY t.id
+      `, [team_id]);
 
-        if (teamData.length === 0) {
-            return res.status(404).json({ error: 'Team not found' });
-        }
+            if (teamData.length === 0) {
+                return res.status(404).json({ error: 'Team not found' });
+            }
 
-        const remainingPurse = teamData[0].max_purse - teamData[0].spent;
-        if (sold_amount > remainingPurse) {
-            return res.status(400).json({
-                error: `Insufficient budget. Team has only ${remainingPurse} Cr remaining`
-            });
+            const remainingPurse = teamData[0].max_purse - teamData[0].spent;
+            if (sold_amount > remainingPurse) {
+                return res.status(400).json({
+                    error: `Insufficient budget. Team has only ${remainingPurse} Cr remaining`
+                });
+            }
         }
 
         const [result] = await pool.query(
-            'INSERT INTO players (name, role, sold_amount, team_id, notes, points) VALUES (?, ?, ?, ?, ?, ?)',
-            [name, role, sold_amount, team_id, notes || null, points || 0]
+            'INSERT INTO players (name, role, sold_amount, team_id, notes, points, is_unsold) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [name, role, is_unsold ? 0 : sold_amount, is_unsold ? null : team_id, notes || null, points || 0, is_unsold || false]
         );
 
         res.status(201).json({
             id: result.insertId,
             name,
             role,
-            sold_amount,
-            team_id,
+            sold_amount: is_unsold ? 0 : sold_amount,
+            team_id: is_unsold ? null : team_id,
             notes,
             points,
-            message: 'Player added successfully'
+            is_unsold: is_unsold || false,
+            message: is_unsold ? 'Player marked as unsold' : 'Player added successfully'
         });
     } catch (error) {
         console.error('Error adding player:', error);
@@ -123,17 +170,17 @@ router.post('/', async (req, res) => {
 // Update player
 router.put('/:id', async (req, res) => {
     try {
-        const { name, role, sold_amount, team_id, notes, points } = req.body;
+        const { name, role, sold_amount, team_id, notes, points, is_unsold } = req.body;
         const { id } = req.params;
 
         const updates = [];
         const values = [];
 
-        if (name) {
+        if (name !== undefined) {
             updates.push('name = ?');
             values.push(name);
         }
-        if (role) {
+        if (role !== undefined) {
             const validRoles = ['WK', 'Batter', 'Bowler', 'AR'];
             if (!validRoles.includes(role)) {
                 return res.status(400).json({
@@ -147,9 +194,9 @@ router.put('/:id', async (req, res) => {
             updates.push('sold_amount = ?');
             values.push(sold_amount);
         }
-        if (team_id) {
+        if (team_id !== undefined) {
             updates.push('team_id = ?');
-            values.push(team_id);
+            values.push(team_id || null);
         }
         if (notes !== undefined) {
             updates.push('notes = ?');
@@ -158,6 +205,14 @@ router.put('/:id', async (req, res) => {
         if (points !== undefined) {
             updates.push('points = ?');
             values.push(points);
+        }
+        if (is_unsold !== undefined) {
+            updates.push('is_unsold = ?');
+            values.push(is_unsold);
+            if (is_unsold) {
+                updates.push('team_id = NULL');
+                updates.push('sold_amount = 0');
+            }
         }
 
         if (updates.length === 0) {

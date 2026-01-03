@@ -22,7 +22,7 @@
 }
 
 .team-header {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .team-header-info {
@@ -40,14 +40,14 @@
 }
 
 .team-header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #fff;
     margin: 0;
 }
 
 .budget-summary {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -68,6 +68,11 @@
 .budget-card.remaining {
     border-color: rgba(34, 197, 94, 0.3);
     background: rgba(34, 197, 94, 0.1);
+}
+
+.budget-card.points {
+    border-color: rgba(167, 139, 250, 0.3);
+    background: rgba(167, 139, 250, 0.1);
 }
 
 .budget-label {
@@ -91,21 +96,25 @@
     color: #4ade80;
 }
 
+.budget-card.points .budget-value {
+    color: #a78bfa;
+}
+
 .budget-progress {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .progress-bar-large {
-    height: 12px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
     margin-bottom: 8px;
 }
 
 .progress-fill-large {
     height: 100%;
-    border-radius: 6px;
+    border-radius: 5px;
     transition: width 0.5s ease;
 }
 
@@ -116,7 +125,7 @@
 
 .role-distribution {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     justify-content: center;
     margin-bottom: 32px;
     flex-wrap: wrap;
@@ -127,18 +136,20 @@
     flex-direction: column;
     align-items: center;
     background: rgba(30, 30, 45, 0.8);
-    padding: 20px 32px;
+    padding: 16px 28px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.role-emoji {
-    font-size: 2rem;
-    margin-bottom: 8px;
+.role-item:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(99, 102, 241, 0.1);
 }
 
 .role-count {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: #fff;
 }
@@ -146,15 +157,62 @@
 .role-name {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.role-points {
+    color: #a78bfa;
+    font-size: 0.75rem;
+    margin-top: 4px;
 }
 
 .squad-section {
-    margin-top: 32px;
+    margin-top: 24px;
 }
 
-.squad-section h2 {
-    color: #fff;
+.squad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.squad-header h2 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.role-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.role-filter label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.role-filter select {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    cursor: pointer;
+}
+
+.role-filter select:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.role-filter select option {
+    background: #1a1a2e;
+    color: #fff;
 }
 
 .loading,
@@ -189,7 +247,7 @@
     }
 
     .team-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
 
     .budget-summary {
@@ -197,10 +255,15 @@
     }
 
     .role-distribution {
-        gap: 12px;
+        gap: 10px;
     }
 
     .role-item {
-        padding: 16px 24px;
+        padding: 12px 20px;
+    }
+
+    .squad-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

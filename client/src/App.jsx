@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Teams from './pages/Teams';
 import Players from './pages/Players';
 import TeamDetail from './pages/TeamDetail';
+import Settings from './pages/Settings';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/teams" element={<Teams />} />
             <Route path="/teams/:id" element={<TeamDetail />} />
             <Route path="/players" element={<Players />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>

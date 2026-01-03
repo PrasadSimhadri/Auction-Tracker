@@ -4,6 +4,7 @@ import PlayerTable from '../components/PlayerTable';
 import './Players.css';
 
 const ROLES = ['All', 'WK', 'Batter', 'Bowler', 'AR'];
+const STATUS_OPTIONS = ['All', 'Sold', 'Unsold'];
 
 function Players() {
     const [players, setPlayers] = useState([]);
@@ -12,12 +13,19 @@ function Players() {
     const [filters, setFilters] = useState({
         team_id: '',
         role: '',
+        status: 'All',
     });
 
     const fetchData = async () => {
         try {
+            const queryParams = {};
+            if (filters.team_id) queryParams.team_id = filters.team_id;
+            if (filters.role && filters.role !== 'All') queryParams.role = filters.role;
+            if (filters.status === 'Sold') queryParams.is_unsold = 'false';
+            if (filters.status === 'Unsold') queryParams.is_unsold = 'true';
+
             const [playersRes, teamsRes] = await Promise.all([
-                playersApi.getAll(filters.team_id || filters.role ? filters : {}),
+                playersApi.getAll(queryParams),
                 teamsApi.getAll(),
             ]);
             setPlayers(playersRes.data);
@@ -41,7 +49,8 @@ function Players() {
         }));
     };
 
-    const totalValue = players.reduce((sum, p) => sum + parseFloat(p.sold_amount), 0);
+    const soldPlayers = players.filter(p => !p.is_unsold);
+    const totalValue = soldPlayers.reduce((sum, p) => sum + parseFloat(p.sold_amount), 0);
     const totalPoints = players.reduce((sum, p) => sum + (p.points || 0), 0);
 
     if (loading) {
@@ -73,9 +82,17 @@ function Players() {
                 </div>
                 <div className="filter-group">
                     <label>Role:</label>
-                    <select name="role" value={filters.role} onChange={handleFilterChange}>
+                    <select name="role" value={filters.role || 'All'} onChange={handleFilterChange}>
                         {ROLES.map((role) => (
                             <option key={role} value={role}>{role}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="filter-group">
+                    <label>Status:</label>
+                    <select name="status" value={filters.status} onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}>
+                        {STATUS_OPTIONS.map((status) => (
+                            <option key={status} value={status}>{status}</option>
                         ))}
                     </select>
                 </div>
@@ -93,7 +110,12 @@ function Players() {
             </div>
 
             {/* Players Table */}
-            <PlayerTable players={players} onDelete={fetchData} />
+            <PlayerTable
+                players={players}
+                teams={teams}
+                onDelete={fetchData}
+                onUpdate={fetchData}
+            />
         </div>
     );
 }

@@ -1,7 +1,7 @@
 .team-card {
     background: linear-gradient(145deg, rgba(30, 30, 45, 0.9), rgba(25, 25, 40, 0.95));
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -22,8 +22,8 @@
 }
 
 .team-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
     border-color: rgba(99, 102, 241, 0.3);
 }
 
@@ -34,53 +34,49 @@
 .team-card-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
 .team-id {
     background: rgba(99, 102, 241, 0.2);
     color: #a5b4fc;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
 .team-name {
     flex: 1;
-    font-size: 1.2rem;
+    font-size: 0.95rem;
     color: #fff;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.edit-name-input,
-.edit-purse-input {
+.edit-name-input {
     flex: 1;
-    padding: 6px 10px;
-    border-radius: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
     border: 1px solid rgba(99, 102, 241, 0.5);
     background: rgba(99, 102, 241, 0.1);
     color: #fff;
-    font-size: 0.95rem;
-}
-
-.edit-purse-input {
-    width: 80px;
-    text-align: right;
+    font-size: 0.9rem;
+    min-width: 0;
 }
 
 .edit-btn,
 .cancel-btn {
     background: rgba(255, 255, 255, 0.1);
     border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    padding: 4px 10px;
+    border-radius: 4px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
     transition: all 0.2s ease;
 }
 
@@ -97,73 +93,56 @@
     background: rgba(239, 68, 68, 0.3);
 }
 
-.purse-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.purse-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.purse-label {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.85rem;
-}
-
-.purse-value {
-    font-weight: 600;
-    color: #fff;
-}
-
-.purse-value.spent {
-    color: #f59e0b;
-}
-
-.purse-value.remaining {
-    color: #4ade80;
-}
-
 .progress-bar {
-    height: 6px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .progress-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 2px;
     transition: width 0.5s ease, background 0.3s ease;
 }
 
-.team-stats {
-    display: flex;
-    gap: 16px;
+.team-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
 }
 
-.stat {
+.stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    padding: 6px 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
 }
 
 .stat-value {
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #fff;
 }
 
+.stat-value.spent-value {
+    color: #f59e0b;
+}
+
+.stat-value.remaining-value {
+    color: #4ade80;
+}
+
+.stat-value.points-value {
+    color: #a78bfa;
+}
+
 .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
+    margin-top: 2px;
 }

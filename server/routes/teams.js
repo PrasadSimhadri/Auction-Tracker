@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// Get all teams with remaining purse
+// Get all teams with remaining purse and total points
 router.get('/', async (req, res) => {
     try {
         const [teams] = await pool.query(`
@@ -12,9 +12,10 @@ router.get('/', async (req, res) => {
         t.max_purse,
         t.created_at,
         t.updated_at,
-        COALESCE(SUM(p.sold_amount), 0) as spent,
-        (t.max_purse - COALESCE(SUM(p.sold_amount), 0)) as remaining_purse,
-        COUNT(p.id) as player_count
+        COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.sold_amount ELSE 0 END), 0) as spent,
+        (t.max_purse - COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.sold_amount ELSE 0 END), 0)) as remaining_purse,
+        COUNT(CASE WHEN p.is_unsold = FALSE THEN p.id END) as player_count,
+        COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.points ELSE 0 END), 0) as total_points
       FROM teams t
       LEFT JOIN players p ON t.id = p.team_id
       GROUP BY t.id
@@ -27,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get single team by ID
+// Get single team by ID with stats
 router.get('/:id', async (req, res) => {
     try {
         const [teams] = await pool.query(`
@@ -37,9 +38,10 @@ router.get('/:id', async (req, res) => {
         t.max_purse,
         t.created_at,
         t.updated_at,
-        COALESCE(SUM(p.sold_amount), 0) as spent,
-        (t.max_purse - COALESCE(SUM(p.sold_amount), 0)) as remaining_purse,
-        COUNT(p.id) as player_count
+        COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.sold_amount ELSE 0 END), 0) as spent,
+        (t.max_purse - COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.sold_amount ELSE 0 END), 0)) as remaining_purse,
+        COUNT(CASE WHEN p.is_unsold = FALSE THEN p.id END) as player_count,
+        COALESCE(SUM(CASE WHEN p.is_unsold = FALSE THEN p.points ELSE 0 END), 0) as total_points
       FROM teams t
       LEFT JOIN players p ON t.id = p.team_id
       WHERE t.id = ?
@@ -137,17 +139,46 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// Get players for a specific team
+// Get players for a specific team with optional role filter
 router.get('/:id/players', async (req, res) => {
     try {
-        const [players] = await pool.query(
-            'SELECT * FROM players WHERE team_id = ? ORDER BY created_at DESC',
-            [req.params.id]
-        );
+        const { role } = req.query;
+        let query = 'SELECT * FROM players WHERE team_id = ? AND is_unsold = FALSE';
+        const values = [req.params.id];
+
+        if (role) {
+            query += ' AND role = ?';
+            values.push(role);
+        }
+
+        query += ' ORDER BY created_at DESC';
+
+        const [players] = await pool.query(query, values);
         res.json(players);
     } catch (error) {
         console.error('Error fetching team players:', error);
         res.status(500).json({ error: 'Failed to fetch team players' });
+    }
+});
+
+// Get role distribution for a team
+router.get('/:id/stats', async (req, res) => {
+    try {
+        const [roleStats] = await pool.query(`
+      SELECT 
+        role,
+        COUNT(*) as count,
+        COALESCE(SUM(sold_amount), 0) as total_spent,
+        COALESCE(SUM(points), 0) as total_points
+      FROM players 
+      WHERE team_id = ? AND is_unsold = FALSE
+      GROUP BY role
+    `, [req.params.id]);
+
+        res.json(roleStats);
+    } catch (error) {
+        console.error('Error fetching team stats:', error);
+        res.status(500).json({ error: 'Failed to fetch team stats' });
     }
 });
 

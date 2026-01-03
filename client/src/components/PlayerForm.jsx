@@ -17,14 +17,18 @@ function PlayerForm({ teams, onPlayerAdded }) {
         team_id: '',
         notes: '',
         points: '',
+        is_unsold: false,
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const { name, value, type, checked } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
         setError('');
         setSuccess('');
     };
@@ -37,14 +41,20 @@ function PlayerForm({ teams, onPlayerAdded }) {
 
         try {
             const payload = {
-                ...formData,
-                sold_amount: parseFloat(formData.sold_amount),
-                team_id: parseInt(formData.team_id),
+                name: formData.name,
+                role: formData.role,
+                notes: formData.notes,
                 points: formData.points ? parseInt(formData.points) : 0,
+                is_unsold: formData.is_unsold,
             };
 
+            if (!formData.is_unsold) {
+                payload.sold_amount = parseFloat(formData.sold_amount);
+                payload.team_id = parseInt(formData.team_id);
+            }
+
             await playersApi.create(payload);
-            setSuccess(`${formData.name} added successfully!`);
+            setSuccess(formData.is_unsold ? `${formData.name} marked as unsold` : `${formData.name} added successfully!`);
             setFormData({
                 name: '',
                 role: '',
@@ -52,6 +62,7 @@ function PlayerForm({ teams, onPlayerAdded }) {
                 team_id: '',
                 notes: '',
                 points: '',
+                is_unsold: false,
             });
             if (onPlayerAdded) onPlayerAdded();
         } catch (err) {
@@ -101,41 +112,57 @@ function PlayerForm({ teams, onPlayerAdded }) {
                         </select>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="sold_amount">Amount (Cr)</label>
-                        <input
-                            type="number"
-                            id="sold_amount"
-                            name="sold_amount"
-                            value={formData.sold_amount}
-                            onChange={handleChange}
-                            placeholder="0.00"
-                            step="0.1"
-                            min="0"
-                            required
-                        />
+                    <div className="form-group checkbox-group">
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="is_unsold"
+                                checked={formData.is_unsold}
+                                onChange={handleChange}
+                            />
+                            <span>Unsold</span>
+                        </label>
                     </div>
                 </div>
 
-                <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="team_id">Team</label>
-                        <select
-                            id="team_id"
-                            name="team_id"
-                            value={formData.team_id}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">Select Team</option>
-                            {teams.map((team) => (
-                                <option key={team.id} value={team.id}>
-                                    {team.name} ({team.remaining_purse?.toFixed(2) || team.max_purse} Cr left)
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                {!formData.is_unsold && (
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="sold_amount">Amount (Cr)</label>
+                            <input
+                                type="number"
+                                id="sold_amount"
+                                name="sold_amount"
+                                value={formData.sold_amount}
+                                onChange={handleChange}
+                                placeholder="0.00"
+                                step="0.1"
+                                min="0"
+                                required={!formData.is_unsold}
+                            />
+                        </div>
 
+                        <div className="form-group">
+                            <label htmlFor="team_id">Team</label>
+                            <select
+                                id="team_id"
+                                name="team_id"
+                                value={formData.team_id}
+                                onChange={handleChange}
+                                required={!formData.is_unsold}
+                            >
+                                <option value="">Select Team</option>
+                                {teams.map((team) => (
+                                    <option key={team.id} value={team.id}>
+                                        {team.name} ({parseFloat(team.remaining_purse || team.max_purse).toFixed(2)} Cr left)
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                )}
+
+                <div className="form-row">
                     <div className="form-group">
                         <label htmlFor="points">Points</label>
                         <input
@@ -163,7 +190,7 @@ function PlayerForm({ teams, onPlayerAdded }) {
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={loading}>
-                    {loading ? 'Adding...' : 'Add Player'}
+                    {loading ? 'Adding...' : formData.is_unsold ? 'Mark as Unsold' : 'Add Player'}
                 </button>
             </form>
         </div>
